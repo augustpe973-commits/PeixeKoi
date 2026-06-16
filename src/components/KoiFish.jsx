@@ -712,27 +712,26 @@ function drawBodyAndPatches(ctx, spine) {
   const hi = pts => {
     const c = _c(pts), r = _r(pts, c)
 
-    // Halo dourado — aura suave âmbar-ouro
-    const gH = ctx.createRadialGradient(c.x, c.y, r * 0.20, c.x, c.y, r * 1.40)
-    gH.addColorStop(0,    'rgba(255,195,0,0)')
-    gH.addColorStop(0.38, 'rgba(235,158,0,0.28)')
-    gH.addColorStop(0.75, 'rgba(195,115,0,0.12)')
-    gH.addColorStop(1,    'rgba(155,75,0,0)')
-    ctx.save(); ctx.filter = 'blur(14px)'
+    // Halo âmbar suave
+    const gH = ctx.createRadialGradient(c.x, c.y, r * 0.18, c.x, c.y, r * 1.32)
+    gH.addColorStop(0,    'rgba(255,200,0,0)')
+    gH.addColorStop(0.45, 'rgba(230,152,0,0.20)')
+    gH.addColorStop(1,    'rgba(175,90,0,0)')
+    ctx.save(); ctx.filter = 'blur(8px)'
     ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gH; ctx.fill()
     ctx.restore()
 
-    // Núcleo amarelo-ouro: pérola → ouro vívido → âmbar dourado → fade
-    const hx = c.x - r * 0.28, hy = c.y - r * 0.24
-    const gC = ctx.createRadialGradient(hx, hy, 0, c.x + r * 0.05, c.y + r * 0.07, r * 0.94)
-    gC.addColorStop(0,    'rgba(255,255,220,1.00)')
-    gC.addColorStop(0.10, 'rgba(255,228,60,0.98)')
-    gC.addColorStop(0.22, 'rgba(255,190,0,1.00)')
-    gC.addColorStop(0.46, 'rgba(235,148,0,0.88)')
-    gC.addColorStop(0.70, 'rgba(195,100,0,0.38)')
-    gC.addColorStop(0.87, 'rgba(158,64,0,0.08)')
-    gC.addColorStop(1,    'rgba(128,40,0,0)')
-    ctx.save(); ctx.filter = 'blur(3px)'
+    // Núcleo nítido — pérola → ouro vivo → âmbar; borda clara como na referência
+    const hx = c.x - r * 0.26, hy = c.y - r * 0.22
+    const gC = ctx.createRadialGradient(hx, hy, 0, c.x + r * 0.04, c.y + r * 0.06, r * 0.92)
+    gC.addColorStop(0,    'rgba(255,255,218,1.00)')
+    gC.addColorStop(0.09, 'rgba(255,222,48,0.98)')
+    gC.addColorStop(0.22, 'rgba(255,182,0,1.00)')
+    gC.addColorStop(0.50, 'rgba(228,136,0,0.90)')
+    gC.addColorStop(0.74, 'rgba(186,86,0,0.38)')
+    gC.addColorStop(0.89, 'rgba(150,52,0,0.07)')
+    gC.addColorStop(1,    'rgba(120,30,0,0)')
+    ctx.save(); ctx.filter = 'blur(2px)'
     ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gC; ctx.fill()
     ctx.restore()
   }
@@ -741,55 +740,59 @@ function drawBodyAndPatches(ctx, spine) {
   const sumi = pts => {
     const c = _c(pts), r = _r(pts, c)
 
-    // Halo oliva-azul — aura teal-musgo suave
-    const gH = ctx.createRadialGradient(c.x, c.y, r * 0.20, c.x, c.y, r * 1.40)
-    gH.addColorStop(0,    'rgba(65,155,128,0)')
-    gH.addColorStop(0.38, 'rgba(50,130,108,0.26)')
-    gH.addColorStop(0.75, 'rgba(28,82,68,0.12)')
-    gH.addColorStop(1,    'rgba(12,52,44,0)')
-    ctx.save(); ctx.filter = 'blur(14px)'
+    // Halo oliva-musgo suave
+    const gH = ctx.createRadialGradient(c.x, c.y, r * 0.18, c.x, c.y, r * 1.32)
+    gH.addColorStop(0,    'rgba(50,148,120,0)')
+    gH.addColorStop(0.45, 'rgba(36,114,92,0.22)')
+    gH.addColorStop(1,    'rgba(14,64,52,0)')
+    ctx.save(); ctx.filter = 'blur(8px)'
     ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gH; ctx.fill()
     ctx.restore()
 
-    // Núcleo azul-oliva: aguamarina pérola → teal vívido → oliva profundo
-    const hx = c.x - r * 0.26, hy = c.y - r * 0.22
-    const gC = ctx.createRadialGradient(hx, hy, 0, c.x + r * 0.05, c.y + r * 0.07, r * 0.94)
-    gC.addColorStop(0,    'rgba(195,245,230,0.96)')
-    gC.addColorStop(0.10, 'rgba(78,210,178,0.98)')
-    gC.addColorStop(0.22, 'rgba(42,168,138,1.00)')
-    gC.addColorStop(0.46, 'rgba(28,128,105,0.86)')
-    gC.addColorStop(0.70, 'rgba(16,80,65,0.38)')
-    gC.addColorStop(0.87, 'rgba(8,52,43,0.08)')
-    gC.addColorStop(1,    'rgba(4,34,28,0)')
-    ctx.save(); ctx.filter = 'blur(3px)'
+    // Núcleo nítido — gelo-aguamarina → teal-oliva vívido → profundo
+    const hx = c.x - r * 0.24, hy = c.y - r * 0.20
+    const gC = ctx.createRadialGradient(hx, hy, 0, c.x + r * 0.04, c.y + r * 0.06, r * 0.92)
+    gC.addColorStop(0,    'rgba(182,240,218,0.96)')
+    gC.addColorStop(0.09, 'rgba(62,200,164,0.98)')
+    gC.addColorStop(0.22, 'rgba(34,155,124,1.00)')
+    gC.addColorStop(0.50, 'rgba(20,112,90,0.88)')
+    gC.addColorStop(0.74, 'rgba(10,68,55,0.38)')
+    gC.addColorStop(0.89, 'rgba(4,44,36,0.07)')
+    gC.addColorStop(1,    'rgba(2,28,22,0)')
+    ctx.save(); ctx.filter = 'blur(2px)'
     ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gC; ctx.fill()
     ctx.restore()
   }
 
-  // ── Hi (amarelo-ouro) — 3 manchas orgânicas, lado superior do corpo ────────
-  hi(localToWorld(spine, 3, [
-    [-85, 6],[-68,-20],[-44,-38],[-12,-46],[22,-42],
-    [52,-26],[68, 0],  [62, 28], [38, 44], [4, 48],
-    [-28,38],[-56,18],[-76, 2]
+  // ── Sumi (azul-oliva) — DOMINANTE, 2 grandes áreas irregulares ─────────────
+  // Sumi-1: ombro → corpo, wrapping no dorso (como o preto da referência)
+  sumi(localToWorld(spine, 4, [
+    [-80,-2],[-62,-30],[-36,-54],[-2,-64],[32,-58],
+    [60,-38],[76,-6], [70, 26], [46, 50], [10, 60],
+    [-24,52],[-54,28],[-74, 4]
   ]))
-  hi(localToWorld(spine, 8, [
-    [-58,-4],[-42, 22],[-16, 38],[12, 42],[34, 32],
-    [46, 8], [40,-18], [22,-34],[-4,-38],[-28,-28],[-46,-8]
-  ]))
-  hi(localToWorld(spine, 13, [
-    [-34, 2],[-22,-14],[-4,-22],[14,-16],[24, 2],
-    [16, 18],[0, 24], [-16,16]
+  // Sumi-2: meio → traseiro, lado oposto
+  sumi(localToWorld(spine, 10, [
+    [-62, 2],[-46,-28],[-20,-50],[8,-56],[36,-48],
+    [58,-24],[68, 6],  [58, 34], [30, 54],[-2, 58],
+    [-30,44],[-54,20]
   ]))
 
-  // ── Sumi (azul-oliva) — 2 manchas fluidas que entram pelos intervalos ──────
-  sumi(localToWorld(spine, 5, [
-    [-74, 4],[-56,-24],[-30,-44],[4,-50],[36,-44],
-    [60,-22],[72, 6],  [62, 32], [36, 48],[2, 52],
-    [-30,42],[-58,20]
+  // ── Hi (amarelo-ouro) — ACENTO, 3 manchas menores e distintas ─────────────
+  // Hi-1: perto da cabeça, lado +y
+  hi(localToWorld(spine, 2, [
+    [-28, 8],[-14, 34],[4, 46],[22, 44],[38, 28],
+    [40, 2], [26,-20],[4,-30],[-16,-26],[-28,-6]
   ]))
-  sumi(localToWorld(spine, 11, [
-    [-44, 4],[-30,-20],[-6,-32],[18,-26],[32,-4],
-    [26, 20],[6, 32], [-18,24],[-36, 6]
+  // Hi-2: meio do corpo, lado -y (lado oposto ao Hi-1)
+  hi(localToWorld(spine, 7, [
+    [-34,-6],[-20,-32],[-2,-44],[20,-40],[36,-22],
+    [40, 4], [28, 28],  [6, 38],[-14, 34],[-30, 14]
+  ]))
+  // Hi-3: traseiro, pequeno acento
+  hi(localToWorld(spine, 13, [
+    [-22, 2],[-12,-16],[4,-24],[16,-16],[22, 2],
+    [14, 18],[0, 24],[-12,16]
   ]))
 
   // Cycloid scale texture
