@@ -693,31 +693,57 @@ function drawBodyAndPatches(ctx, spine) {
   const _c = pts => { let x=0,y=0; pts.forEach(p=>{x+=p.x;y+=p.y}); return {x:x/pts.length,y:y/pts.length} }
   const _r = (pts,c) => pts.reduce((m,p)=>Math.max(m,Math.hypot(p.x-c.x,p.y-c.y)),0)
 
-  // Hi — forma alongada, borda que dissolve no degradê do corpo
+  // Hi — esmalte laranja-fogo com brilho especular e halo suave
   const hi = pts => {
     const c = _c(pts), r = _r(pts, c)
-    const g = ctx.createRadialGradient(c.x - r*0.20, c.y - r*0.15, r*0.05, c.x + r*0.08, c.y + r*0.10, r * 1.0)
-    g.addColorStop(0,    'rgba(255,65,0,1.00)')
-    g.addColorStop(0.26, 'rgba(255,120,0,0.88)')
-    g.addColorStop(0.58, 'rgba(242,62,0,0.40)')
-    g.addColorStop(0.82, 'rgba(215,36,0,0.10)')
-    g.addColorStop(1,    'rgba(190,18,0,0)')
-    ctx.save(); ctx.filter = 'blur(6px)'
-    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g; ctx.fill()
+
+    // Halo externo — aura suave ao redor da mancha
+    const gH = ctx.createRadialGradient(c.x, c.y, r * 0.25, c.x, c.y, r * 1.35)
+    gH.addColorStop(0,   'rgba(255,100,0,0)')
+    gH.addColorStop(0.4, 'rgba(255,80,0,0.28)')
+    gH.addColorStop(1,   'rgba(220,40,0,0)')
+    ctx.save(); ctx.filter = 'blur(14px)'
+    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gH; ctx.fill()
+    ctx.restore()
+
+    // Núcleo joia: brilho especular topo-esquerdo → laranja vívido → fade
+    const hx = c.x - r * 0.28, hy = c.y - r * 0.24
+    const gC = ctx.createRadialGradient(hx, hy, 0, c.x + r * 0.06, c.y + r * 0.08, r * 0.94)
+    gC.addColorStop(0,    'rgba(255,240,140,0.92)')   // specular: dourado quente
+    gC.addColorStop(0.11, 'rgba(255,100,0,1.00)')      // laranja puro
+    gC.addColorStop(0.40, 'rgba(255,72,0,0.88)')
+    gC.addColorStop(0.68, 'rgba(220,38,0,0.38)')
+    gC.addColorStop(0.86, 'rgba(190,16,0,0.08)')
+    gC.addColorStop(1,    'rgba(165,0,0,0)')
+    ctx.save(); ctx.filter = 'blur(4px)'
+    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gC; ctx.fill()
     ctx.restore()
   }
 
-  // Sumi — pincelada turquesa, borda funde no branco
+  // Sumi — esmalte ciano-elétrico com brilho glacial e profundidade
   const sumi = pts => {
     const c = _c(pts), r = _r(pts, c)
-    const g = ctx.createRadialGradient(c.x - r*0.16, c.y - r*0.12, r*0.04, c.x + r*0.06, c.y + r*0.08, r * 1.0)
-    g.addColorStop(0,    'rgba(0,235,255,0.98)')
-    g.addColorStop(0.32, 'rgba(0,165,198,0.78)')
-    g.addColorStop(0.65, 'rgba(0,100,132,0.32)')
-    g.addColorStop(0.86, 'rgba(0,64,88,0.07)')
-    g.addColorStop(1,    'rgba(0,42,58,0)')
-    ctx.save(); ctx.filter = 'blur(4px)'
-    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g; ctx.fill()
+
+    // Halo externo
+    const gH = ctx.createRadialGradient(c.x, c.y, r * 0.25, c.x, c.y, r * 1.35)
+    gH.addColorStop(0,   'rgba(0,210,240,0)')
+    gH.addColorStop(0.4, 'rgba(0,190,225,0.24)')
+    gH.addColorStop(1,   'rgba(0,130,168,0)')
+    ctx.save(); ctx.filter = 'blur(14px)'
+    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gH; ctx.fill()
+    ctx.restore()
+
+    // Núcleo joia: brilho glacial topo-esquerdo → ciano elétrico → profundo
+    const hx = c.x - r * 0.26, hy = c.y - r * 0.22
+    const gC = ctx.createRadialGradient(hx, hy, 0, c.x + r * 0.05, c.y + r * 0.07, r * 0.94)
+    gC.addColorStop(0,    'rgba(195,255,255,0.90)')   // specular: gelo brilhante
+    gC.addColorStop(0.10, 'rgba(0,248,255,0.98)')      // ciano elétrico puro
+    gC.addColorStop(0.36, 'rgba(0,178,210,0.80)')
+    gC.addColorStop(0.65, 'rgba(0,108,145,0.32)')
+    gC.addColorStop(0.85, 'rgba(0,68,96,0.07)')
+    gC.addColorStop(1,    'rgba(0,44,62,0)')
+    ctx.save(); ctx.filter = 'blur(3px)'
+    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gC; ctx.fill()
     ctx.restore()
   }
 
