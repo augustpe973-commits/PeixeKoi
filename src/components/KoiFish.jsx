@@ -666,11 +666,12 @@ function drawBodyAndPatches(ctx, spine) {
   // Body base — degradê vívido ouro→branco→turquesa ao longo do eixo do peixe
   const gh = spine[0], gt = spine[NJ - 1]
   const bg = ctx.createLinearGradient(gh.x, gh.y, gt.x, gt.y)
-  bg.addColorStop(0,    '#FFD000')
-  bg.addColorStop(0.20, '#FFF5C8')
-  bg.addColorStop(0.50, '#FFFFFF')
-  bg.addColorStop(0.80, '#B8F4F8')
-  bg.addColorStop(1,    '#10CCD8')
+  bg.addColorStop(0,    '#FF9500')
+  bg.addColorStop(0.14, '#FFD000')
+  bg.addColorStop(0.38, '#FFF8E8')
+  bg.addColorStop(0.55, '#FFFFFF')
+  bg.addColorStop(0.78, '#72EEFF')
+  bg.addColorStop(1,    '#00B8D4')
   applyBodyPath(ctx, spine, edges)
   ctx.fillStyle = bg; ctx.fill()
 
@@ -683,8 +684,8 @@ function drawBodyAndPatches(ctx, spine) {
   const sx0 = sd4.x - sdD.dy * sd4.hw * 0.85, sy0 = sd4.y + sdD.dx * sd4.hw * 0.85
   const sx1 = sd4.x + sdD.dy * sd4.hw * 1.15, sy1 = sd4.y - sdD.dx * sd4.hw * 1.15
   const sheen = ctx.createLinearGradient(sx0, sy0, sx1, sy1)
-  sheen.addColorStop(0,    'rgba(255,255,255,0.55)')
-  sheen.addColorStop(0.32, 'rgba(255,252,230,0.22)')
+  sheen.addColorStop(0,    'rgba(255,255,255,0.75)')
+  sheen.addColorStop(0.28, 'rgba(255,250,220,0.32)')
   sheen.addColorStop(1,    'rgba(255,255,255,0)')
   ctx.fillStyle = sheen
   ctx.fillRect(gh.x - 600, gh.y - 600, 1200, 1200)
@@ -696,11 +697,11 @@ function drawBodyAndPatches(ctx, spine) {
   const hi = pts => {
     const c = _c(pts), r = _r(pts, c)
     const g = ctx.createRadialGradient(c.x - r*0.20, c.y - r*0.15, r*0.05, c.x + r*0.08, c.y + r*0.10, r * 1.0)
-    g.addColorStop(0,    'rgba(255,108,0,0.92)')
-    g.addColorStop(0.30, 'rgba(255,140,0,0.72)')
-    g.addColorStop(0.62, 'rgba(240,88,0,0.30)')
-    g.addColorStop(0.84, 'rgba(215,55,0,0.08)')
-    g.addColorStop(1,    'rgba(190,30,0,0)')
+    g.addColorStop(0,    'rgba(255,65,0,1.00)')
+    g.addColorStop(0.26, 'rgba(255,120,0,0.88)')
+    g.addColorStop(0.58, 'rgba(242,62,0,0.40)')
+    g.addColorStop(0.82, 'rgba(215,36,0,0.10)')
+    g.addColorStop(1,    'rgba(190,18,0,0)')
     ctx.save(); ctx.filter = 'blur(6px)'
     ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g; ctx.fill()
     ctx.restore()
@@ -710,11 +711,11 @@ function drawBodyAndPatches(ctx, spine) {
   const sumi = pts => {
     const c = _c(pts), r = _r(pts, c)
     const g = ctx.createRadialGradient(c.x - r*0.16, c.y - r*0.12, r*0.04, c.x + r*0.06, c.y + r*0.08, r * 1.0)
-    g.addColorStop(0,    'rgba(0,208,232,0.90)')
-    g.addColorStop(0.35, 'rgba(0,148,172,0.62)')
-    g.addColorStop(0.68, 'rgba(0,88,112,0.22)')
-    g.addColorStop(0.88, 'rgba(0,58,76,0.05)')
-    g.addColorStop(1,    'rgba(0,38,52,0)')
+    g.addColorStop(0,    'rgba(0,235,255,0.98)')
+    g.addColorStop(0.32, 'rgba(0,165,198,0.78)')
+    g.addColorStop(0.65, 'rgba(0,100,132,0.32)')
+    g.addColorStop(0.86, 'rgba(0,64,88,0.07)')
+    g.addColorStop(1,    'rgba(0,42,58,0)')
     ctx.save(); ctx.filter = 'blur(4px)'
     ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g; ctx.fill()
     ctx.restore()
@@ -769,8 +770,8 @@ function drawBodyAndPatches(ctx, spine) {
 
   // Body outline
   applyBodyPath(ctx, spine, edges)
-  ctx.strokeStyle = 'rgba(0,80,105,0.50)'
-  ctx.lineWidth = 1.3; ctx.stroke()
+  ctx.strokeStyle = 'rgba(0,72,98,0.70)'
+  ctx.lineWidth = 1.4; ctx.stroke()
 }
 
 // ── Eyes — small, laterally placed, with sclera ring and specular ──────────
