@@ -663,13 +663,14 @@ function drawBodyAndPatches(ctx, spine) {
   ctx.fillStyle   = '#FFFFFF'; ctx.fill()
   ctx.restore()
 
-  // Body base — gradient ouro→marfim→turquesa seguindo a orientação do peixe
+  // Body base — degradê vívido ouro→branco→turquesa ao longo do eixo do peixe
   const gh = spine[0], gt = spine[NJ - 1]
   const bg = ctx.createLinearGradient(gh.x, gh.y, gt.x, gt.y)
-  bg.addColorStop(0,    '#FFE88A')
-  bg.addColorStop(0.32, '#F8F4EE')
-  bg.addColorStop(0.68, '#E4F6F6')
-  bg.addColorStop(1,    '#A8E8E8')
+  bg.addColorStop(0,    '#FFD000')
+  bg.addColorStop(0.20, '#FFF5C8')
+  bg.addColorStop(0.50, '#FFFFFF')
+  bg.addColorStop(0.80, '#B8F4F8')
+  bg.addColorStop(1,    '#10CCD8')
   applyBodyPath(ctx, spine, edges)
   ctx.fillStyle = bg; ctx.fill()
 
@@ -677,30 +678,44 @@ function drawBodyAndPatches(ctx, spine) {
   applyBodyPath(ctx, spine, edges)
   ctx.clip()
 
+  // Brilho dorsal perlado — reflexo de luz no dorso
+  const sd4 = spine[4], sdD = jDir(spine, 4)
+  const sx0 = sd4.x - sdD.dy * sd4.hw * 0.85, sy0 = sd4.y + sdD.dx * sd4.hw * 0.85
+  const sx1 = sd4.x + sdD.dy * sd4.hw * 1.15, sy1 = sd4.y - sdD.dx * sd4.hw * 1.15
+  const sheen = ctx.createLinearGradient(sx0, sy0, sx1, sy1)
+  sheen.addColorStop(0,    'rgba(255,255,255,0.55)')
+  sheen.addColorStop(0.32, 'rgba(255,252,230,0.22)')
+  sheen.addColorStop(1,    'rgba(255,255,255,0)')
+  ctx.fillStyle = sheen
+  ctx.fillRect(gh.x - 600, gh.y - 600, 1200, 1200)
+
   const _c = pts => { let x=0,y=0; pts.forEach(p=>{x+=p.x;y+=p.y}); return {x:x/pts.length,y:y/pts.length} }
   const _r = (pts,c) => pts.reduce((m,p)=>Math.max(m,Math.hypot(p.x-c.x,p.y-c.y)),0)
 
+  // Hi — laranja-âmbar vívido, borda transparente, textura pintada
   const hi = pts => {
     const c = _c(pts), r = _r(pts,c)
-    const g = ctx.createRadialGradient(c.x-r*0.18, c.y-r*0.22, r*0.04, c.x+r*0.06, c.y+r*0.10, r*1.05)
-    g.addColorStop(0,   '#FFE040')
-    g.addColorStop(0.4, '#E8B010')
-    g.addColorStop(0.8, '#C08A06')
-    g.addColorStop(1,   'rgba(148,100,4,0)')
-    ctx.save(); ctx.filter='blur(5px)'
-    ctx.beginPath(); catmullClosed(ctx,pts); ctx.fillStyle=g; ctx.fill()
+    const g = ctx.createRadialGradient(c.x-r*0.22, c.y-r*0.22, r*0.03, c.x+r*0.10, c.y+r*0.14, r*1.10)
+    g.addColorStop(0,    '#FF8000')
+    g.addColorStop(0.28, '#FFAA00')
+    g.addColorStop(0.65, '#DD6000')
+    g.addColorStop(0.88, 'rgba(200,60,0,0.35)')
+    g.addColorStop(1,    'rgba(170,40,0,0)')
+    ctx.save(); ctx.filter = 'blur(4px)'
+    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g; ctx.fill()
     ctx.restore()
   }
 
+  // Sumi — turquesa joia com bordas firmes e profundidade
   const sumi = pts => {
     const c = _c(pts), r = _r(pts,c)
-    const g = ctx.createRadialGradient(c.x-r*0.10, c.y-r*0.14, 0, c.x, c.y, r)
-    g.addColorStop(0,   '#1ACEE0')
-    g.addColorStop(0.5, '#0898AC')
-    g.addColorStop(0.85,'#056878')
-    g.addColorStop(1,   '#033E4A')
-    ctx.save(); ctx.filter='blur(2.5px)'
-    ctx.beginPath(); catmullClosed(ctx,pts); ctx.fillStyle=g; ctx.fill()
+    const g = ctx.createRadialGradient(c.x-r*0.14, c.y-r*0.18, r*0.02, c.x+r*0.06, c.y+r*0.08, r*1.06)
+    g.addColorStop(0,    '#00E4F4')
+    g.addColorStop(0.35, '#0098B8')
+    g.addColorStop(0.78, '#005870')
+    g.addColorStop(1,    '#002838')
+    ctx.save(); ctx.filter = 'blur(1.5px)'
+    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g; ctx.fill()
     ctx.restore()
   }
 
@@ -743,8 +758,8 @@ function drawBodyAndPatches(ctx, spine) {
   ]))
 
   // Cycloid scale texture
-  ctx.globalAlpha = 0.072
-  ctx.strokeStyle = '#8A9A80'; ctx.lineWidth = 0.70
+  ctx.globalAlpha = 0.10
+  ctx.strokeStyle = '#C8A030'; ctx.lineWidth = 0.70
   for (let i = 2; i < NJ - 3; i += 2) {
     const pt = spine[i], d = jDir(spine, i)
     const a = Math.atan2(d.dy, d.dx), hw = pt.hw
@@ -760,7 +775,7 @@ function drawBodyAndPatches(ctx, spine) {
 
   // Body outline
   applyBodyPath(ctx, spine, edges)
-  ctx.strokeStyle = 'rgba(60,90,80,0.55)'
+  ctx.strokeStyle = 'rgba(0,80,105,0.50)'
   ctx.lineWidth = 1.3; ctx.stroke()
 }
 
