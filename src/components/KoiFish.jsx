@@ -712,26 +712,14 @@ function drawBodyAndPatches(ctx, spine) {
   const hi = pts => {
     const c = _c(pts), r = _r(pts, c)
 
-    // Halo âmbar suave
-    const gH = ctx.createRadialGradient(c.x, c.y, r * 0.18, c.x, c.y, r * 1.32)
-    gH.addColorStop(0,    'rgba(255,200,0,0)')
-    gH.addColorStop(0.45, 'rgba(230,152,0,0.20)')
-    gH.addColorStop(1,    'rgba(175,90,0,0)')
-    ctx.save(); ctx.filter = 'blur(8px)'
-    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gH; ctx.fill()
-    ctx.restore()
-
-    // Núcleo nítido — pérola → ouro vivo → âmbar; borda clara como na referência
-    const hx = c.x - r * 0.26, hy = c.y - r * 0.22
-    const gC = ctx.createRadialGradient(hx, hy, 0, c.x + r * 0.04, c.y + r * 0.06, r * 0.92)
-    gC.addColorStop(0,    'rgba(255,255,218,1.00)')
-    gC.addColorStop(0.09, 'rgba(255,222,48,0.98)')
-    gC.addColorStop(0.22, 'rgba(255,182,0,1.00)')
-    gC.addColorStop(0.50, 'rgba(228,136,0,0.90)')
-    gC.addColorStop(0.74, 'rgba(186,86,0,0.38)')
-    gC.addColorStop(0.89, 'rgba(150,52,0,0.07)')
-    gC.addColorStop(1,    'rgba(120,30,0,0)')
-    ctx.save(); ctx.filter = 'blur(2px)'
+    // Preenchimento plano — cor uniforme no centro, apenas as bordas esmaecendo
+    const gC = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, r * 0.98)
+    gC.addColorStop(0,    'rgba(248,182,0,1.00)')
+    gC.addColorStop(0.55, 'rgba(238,168,0,0.97)')
+    gC.addColorStop(0.76, 'rgba(215,132,0,0.60)')
+    gC.addColorStop(0.90, 'rgba(185,90,0,0.18)')
+    gC.addColorStop(1,    'rgba(150,55,0,0)')
+    ctx.save(); ctx.filter = 'blur(3px)'
     ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gC; ctx.fill()
     ctx.restore()
   }
@@ -740,26 +728,14 @@ function drawBodyAndPatches(ctx, spine) {
   const sumi = pts => {
     const c = _c(pts), r = _r(pts, c)
 
-    // Halo oliva-musgo suave
-    const gH = ctx.createRadialGradient(c.x, c.y, r * 0.18, c.x, c.y, r * 1.32)
-    gH.addColorStop(0,    'rgba(50,148,120,0)')
-    gH.addColorStop(0.45, 'rgba(36,114,92,0.22)')
-    gH.addColorStop(1,    'rgba(14,64,52,0)')
-    ctx.save(); ctx.filter = 'blur(8px)'
-    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gH; ctx.fill()
-    ctx.restore()
-
-    // Núcleo nítido — gelo-aguamarina → teal-oliva vívido → profundo
-    const hx = c.x - r * 0.24, hy = c.y - r * 0.20
-    const gC = ctx.createRadialGradient(hx, hy, 0, c.x + r * 0.04, c.y + r * 0.06, r * 0.92)
-    gC.addColorStop(0,    'rgba(182,240,218,0.96)')
-    gC.addColorStop(0.09, 'rgba(62,200,164,0.98)')
-    gC.addColorStop(0.22, 'rgba(34,155,124,1.00)')
-    gC.addColorStop(0.50, 'rgba(20,112,90,0.88)')
-    gC.addColorStop(0.74, 'rgba(10,68,55,0.38)')
-    gC.addColorStop(0.89, 'rgba(4,44,36,0.07)')
-    gC.addColorStop(1,    'rgba(2,28,22,0)')
-    ctx.save(); ctx.filter = 'blur(2px)'
+    // Preenchimento plano — teal-oliva uniforme, só as bordas esmaecendo
+    const gC = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, r * 0.98)
+    gC.addColorStop(0,    'rgba(32,148,118,1.00)')
+    gC.addColorStop(0.55, 'rgba(26,128,102,0.97)')
+    gC.addColorStop(0.76, 'rgba(16,88,70,0.60)')
+    gC.addColorStop(0.90, 'rgba(8,56,46,0.18)')
+    gC.addColorStop(1,    'rgba(3,32,26,0)')
+    ctx.save(); ctx.filter = 'blur(3px)'
     ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gC; ctx.fill()
     ctx.restore()
   }
