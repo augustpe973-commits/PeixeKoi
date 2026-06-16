@@ -666,12 +666,14 @@ function drawBodyAndPatches(ctx, spine) {
   // Body base — degradê vívido ouro→branco→turquesa ao longo do eixo do peixe
   const gh = spine[0], gt = spine[NJ - 1]
   const bg = ctx.createLinearGradient(gh.x, gh.y, gt.x, gt.y)
-  bg.addColorStop(0,    '#FF9500')
-  bg.addColorStop(0.14, '#FFD000')
-  bg.addColorStop(0.38, '#FFF8E8')
-  bg.addColorStop(0.55, '#FFFFFF')
-  bg.addColorStop(0.78, '#72EEFF')
-  bg.addColorStop(1,    '#00B8D4')
+  bg.addColorStop(0,    '#D84000')
+  bg.addColorStop(0.10, '#FF9800')
+  bg.addColorStop(0.22, '#FFD840')
+  bg.addColorStop(0.40, '#FFFBF0')
+  bg.addColorStop(0.52, '#FFFFFF')
+  bg.addColorStop(0.70, '#38EAFF')
+  bg.addColorStop(0.86, '#00B8D8')
+  bg.addColorStop(1,    '#005E7A')
   applyBodyPath(ctx, spine, edges)
   ctx.fillStyle = bg; ctx.fill()
 
@@ -684,10 +686,23 @@ function drawBodyAndPatches(ctx, spine) {
   const sx0 = sd4.x - sdD.dy * sd4.hw * 0.85, sy0 = sd4.y + sdD.dx * sd4.hw * 0.85
   const sx1 = sd4.x + sdD.dy * sd4.hw * 1.15, sy1 = sd4.y - sdD.dx * sd4.hw * 1.15
   const sheen = ctx.createLinearGradient(sx0, sy0, sx1, sy1)
-  sheen.addColorStop(0,    'rgba(255,255,255,0.75)')
-  sheen.addColorStop(0.28, 'rgba(255,250,220,0.32)')
+  sheen.addColorStop(0,    'rgba(255,255,255,0.80)')
+  sheen.addColorStop(0.25, 'rgba(255,248,210,0.35)')
   sheen.addColorStop(1,    'rgba(255,255,255,0)')
   ctx.fillStyle = sheen
+  ctx.fillRect(gh.x - 600, gh.y - 600, 1200, 1200)
+
+  // Veladura iridescente — shimmer pérola que atravessa o branco do corpo
+  const im6 = spine[6], imD6 = jDir(spine, 6)
+  const ir0x = im6.x - imD6.dy * im6.hw, ir0y = im6.y + imD6.dx * im6.hw
+  const ir1x = im6.x + imD6.dy * im6.hw, ir1y = im6.y - imD6.dx * im6.hw
+  const irid = ctx.createLinearGradient(ir0x, ir0y, ir1x, ir1y)
+  irid.addColorStop(0,    'rgba(255,200,80,0.16)')
+  irid.addColorStop(0.30, 'rgba(255,255,180,0.08)')
+  irid.addColorStop(0.52, 'rgba(180,255,255,0.12)')
+  irid.addColorStop(0.74, 'rgba(160,200,255,0.08)')
+  irid.addColorStop(1,    'rgba(200,160,255,0.16)')
+  ctx.fillStyle = irid
   ctx.fillRect(gh.x - 600, gh.y - 600, 1200, 1200)
 
   const _c = pts => { let x=0,y=0; pts.forEach(p=>{x+=p.x;y+=p.y}); return {x:x/pts.length,y:y/pts.length} }
@@ -697,25 +712,27 @@ function drawBodyAndPatches(ctx, spine) {
   const hi = pts => {
     const c = _c(pts), r = _r(pts, c)
 
-    // Halo externo — aura suave ao redor da mancha
-    const gH = ctx.createRadialGradient(c.x, c.y, r * 0.25, c.x, c.y, r * 1.35)
-    gH.addColorStop(0,   'rgba(255,100,0,0)')
-    gH.addColorStop(0.4, 'rgba(255,80,0,0.28)')
-    gH.addColorStop(1,   'rgba(220,40,0,0)')
-    ctx.save(); ctx.filter = 'blur(14px)'
+    // Halo cálido — aura laranja-âmbar ampla e suave
+    const gH = ctx.createRadialGradient(c.x, c.y, r * 0.20, c.x, c.y, r * 1.45)
+    gH.addColorStop(0,    'rgba(255,110,0,0)')
+    gH.addColorStop(0.35, 'rgba(255,80,0,0.32)')
+    gH.addColorStop(0.72, 'rgba(210,35,0,0.14)')
+    gH.addColorStop(1,    'rgba(180,10,0,0)')
+    ctx.save(); ctx.filter = 'blur(16px)'
     ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gH; ctx.fill()
     ctx.restore()
 
-    // Núcleo joia: brilho especular topo-esquerdo → laranja vívido → fade
-    const hx = c.x - r * 0.28, hy = c.y - r * 0.24
-    const gC = ctx.createRadialGradient(hx, hy, 0, c.x + r * 0.06, c.y + r * 0.08, r * 0.94)
-    gC.addColorStop(0,    'rgba(255,240,140,0.92)')   // specular: dourado quente
-    gC.addColorStop(0.11, 'rgba(255,100,0,1.00)')      // laranja puro
-    gC.addColorStop(0.40, 'rgba(255,72,0,0.88)')
-    gC.addColorStop(0.68, 'rgba(220,38,0,0.38)')
-    gC.addColorStop(0.86, 'rgba(190,16,0,0.08)')
-    gC.addColorStop(1,    'rgba(165,0,0,0)')
-    ctx.save(); ctx.filter = 'blur(4px)'
+    // Núcleo ópalo-de-fogo: especular branco-dourado → laranja-fogo → âmbar profundo
+    const hx = c.x - r * 0.30, hy = c.y - r * 0.26
+    const gC = ctx.createRadialGradient(hx, hy, 0, c.x + r * 0.05, c.y + r * 0.07, r * 0.96)
+    gC.addColorStop(0,    'rgba(255,255,210,1.00)')   // ponto de luz puro
+    gC.addColorStop(0.08, 'rgba(255,180,20,0.98)')    // dourado quente
+    gC.addColorStop(0.18, 'rgba(255,80,0,1.00)')      // laranja-fogo
+    gC.addColorStop(0.44, 'rgba(250,52,0,0.90)')
+    gC.addColorStop(0.70, 'rgba(215,22,0,0.42)')
+    gC.addColorStop(0.87, 'rgba(180,5,0,0.09)')
+    gC.addColorStop(1,    'rgba(155,0,0,0)')
+    ctx.save(); ctx.filter = 'blur(3px)'
     ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gC; ctx.fill()
     ctx.restore()
   }
@@ -724,24 +741,26 @@ function drawBodyAndPatches(ctx, spine) {
   const sumi = pts => {
     const c = _c(pts), r = _r(pts, c)
 
-    // Halo externo
-    const gH = ctx.createRadialGradient(c.x, c.y, r * 0.25, c.x, c.y, r * 1.35)
-    gH.addColorStop(0,   'rgba(0,210,240,0)')
-    gH.addColorStop(0.4, 'rgba(0,190,225,0.24)')
-    gH.addColorStop(1,   'rgba(0,130,168,0)')
-    ctx.save(); ctx.filter = 'blur(14px)'
+    // Halo oceânico — aura azul-teal ampla
+    const gH = ctx.createRadialGradient(c.x, c.y, r * 0.20, c.x, c.y, r * 1.45)
+    gH.addColorStop(0,    'rgba(0,220,245,0)')
+    gH.addColorStop(0.35, 'rgba(0,195,230,0.28)')
+    gH.addColorStop(0.72, 'rgba(0,115,165,0.14)')
+    gH.addColorStop(1,    'rgba(0,65,105,0)')
+    ctx.save(); ctx.filter = 'blur(16px)'
     ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gH; ctx.fill()
     ctx.restore()
 
-    // Núcleo joia: brilho glacial topo-esquerdo → ciano elétrico → profundo
-    const hx = c.x - r * 0.26, hy = c.y - r * 0.22
-    const gC = ctx.createRadialGradient(hx, hy, 0, c.x + r * 0.05, c.y + r * 0.07, r * 0.94)
-    gC.addColorStop(0,    'rgba(195,255,255,0.90)')   // specular: gelo brilhante
-    gC.addColorStop(0.10, 'rgba(0,248,255,0.98)')      // ciano elétrico puro
-    gC.addColorStop(0.36, 'rgba(0,178,210,0.80)')
-    gC.addColorStop(0.65, 'rgba(0,108,145,0.32)')
-    gC.addColorStop(0.85, 'rgba(0,68,96,0.07)')
-    gC.addColorStop(1,    'rgba(0,44,62,0)')
+    // Núcleo turmalina: especular branco-gelo → ciano neon → teal → azul profundo
+    const hx = c.x - r * 0.28, hy = c.y - r * 0.24
+    const gC = ctx.createRadialGradient(hx, hy, 0, c.x + r * 0.05, c.y + r * 0.07, r * 0.96)
+    gC.addColorStop(0,    'rgba(230,255,255,1.00)')   // ponto de luz gelo
+    gC.addColorStop(0.08, 'rgba(100,255,255,0.98)')   // ciano brilhante
+    gC.addColorStop(0.18, 'rgba(0,248,255,1.00)')     // neon puro
+    gC.addColorStop(0.42, 'rgba(0,192,235,0.88)')
+    gC.addColorStop(0.68, 'rgba(0,118,170,0.40)')
+    gC.addColorStop(0.86, 'rgba(0,72,115,0.09)')
+    gC.addColorStop(1,    'rgba(0,46,76,0)')
     ctx.save(); ctx.filter = 'blur(3px)'
     ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = gC; ctx.fill()
     ctx.restore()
@@ -779,8 +798,8 @@ function drawBodyAndPatches(ctx, spine) {
   ]))
 
   // Cycloid scale texture
-  ctx.globalAlpha = 0.10
-  ctx.strokeStyle = '#C8A030'; ctx.lineWidth = 0.70
+  ctx.globalAlpha = 0.13
+  ctx.strokeStyle = '#D4A828'; ctx.lineWidth = 0.75
   for (let i = 2; i < NJ - 3; i += 2) {
     const pt = spine[i], d = jDir(spine, i)
     const a = Math.atan2(d.dy, d.dx), hw = pt.hw
