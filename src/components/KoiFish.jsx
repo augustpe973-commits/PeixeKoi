@@ -692,30 +692,53 @@ function drawBodyAndPatches(ctx, spine) {
   const _c = pts => { let x=0,y=0; pts.forEach(p=>{x+=p.x;y+=p.y}); return {x:x/pts.length,y:y/pts.length} }
   const _r = (pts,c) => pts.reduce((m,p)=>Math.max(m,Math.hypot(p.x-c.x,p.y-c.y)),0)
 
-  // Hi — laranja-âmbar vívido, borda transparente, textura pintada
+  // Hi — halo externo suave + núcleo pintado; cor que vive na pele, não sobre ela
   const hi = pts => {
-    const c = _c(pts), r = _r(pts,c)
-    const g = ctx.createRadialGradient(c.x-r*0.22, c.y-r*0.22, r*0.03, c.x+r*0.10, c.y+r*0.14, r*1.10)
-    g.addColorStop(0,    '#FF8000')
-    g.addColorStop(0.28, '#FFAA00')
-    g.addColorStop(0.65, '#DD6000')
-    g.addColorStop(0.88, 'rgba(200,60,0,0.35)')
-    g.addColorStop(1,    'rgba(170,40,0,0)')
-    ctx.save(); ctx.filter = 'blur(4px)'
-    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g; ctx.fill()
+    const c = _c(pts), r = _r(pts, c)
+
+    // Camada 1: halo amplo e etéreo
+    const g1 = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, r * 1.55)
+    g1.addColorStop(0,    'rgba(255,120,0,0.38)')
+    g1.addColorStop(0.45, 'rgba(255,100,0,0.14)')
+    g1.addColorStop(1,    'rgba(255,80,0,0)')
+    ctx.save(); ctx.filter = 'blur(28px)'
+    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g1; ctx.fill()
+    ctx.restore()
+
+    // Camada 2: núcleo pigmentado com borda que se dissolve
+    const g2 = ctx.createRadialGradient(c.x - r*0.18, c.y - r*0.18, 0, c.x, c.y, r * 1.02)
+    g2.addColorStop(0,    'rgba(255,115,0,0.80)')
+    g2.addColorStop(0.38, 'rgba(255,145,0,0.52)')
+    g2.addColorStop(0.72, 'rgba(230,80,0,0.18)')
+    g2.addColorStop(0.92, 'rgba(210,55,0,0.04)')
+    g2.addColorStop(1,    'rgba(190,40,0,0)')
+    ctx.save(); ctx.filter = 'blur(10px)'
+    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g2; ctx.fill()
     ctx.restore()
   }
 
-  // Sumi — turquesa joia com bordas firmes e profundidade
+  // Sumi — velatura de turquesa que se funde ao corpo, sem bordas duras
   const sumi = pts => {
-    const c = _c(pts), r = _r(pts,c)
-    const g = ctx.createRadialGradient(c.x-r*0.14, c.y-r*0.18, r*0.02, c.x+r*0.06, c.y+r*0.08, r*1.06)
-    g.addColorStop(0,    '#00E4F4')
-    g.addColorStop(0.35, '#0098B8')
-    g.addColorStop(0.78, '#005870')
-    g.addColorStop(1,    '#002838')
-    ctx.save(); ctx.filter = 'blur(1.5px)'
-    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g; ctx.fill()
+    const c = _c(pts), r = _r(pts, c)
+
+    // Camada 1: halo largo e diáfano
+    const g1 = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, r * 1.50)
+    g1.addColorStop(0,    'rgba(0,210,235,0.32)')
+    g1.addColorStop(0.50, 'rgba(0,160,190,0.10)')
+    g1.addColorStop(1,    'rgba(0,120,150,0)')
+    ctx.save(); ctx.filter = 'blur(22px)'
+    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g1; ctx.fill()
+    ctx.restore()
+
+    // Camada 2: núcleo vívido com dissolução gradual
+    const g2 = ctx.createRadialGradient(c.x - r*0.12, c.y - r*0.14, 0, c.x, c.y, r * 1.04)
+    g2.addColorStop(0,    'rgba(0,218,238,0.85)')
+    g2.addColorStop(0.38, 'rgba(0,152,178,0.58)')
+    g2.addColorStop(0.72, 'rgba(0,86,108,0.20)')
+    g2.addColorStop(0.92, 'rgba(0,56,72,0.04)')
+    g2.addColorStop(1,    'rgba(0,38,50,0)')
+    ctx.save(); ctx.filter = 'blur(8px)'
+    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g2; ctx.fill()
     ctx.restore()
   }
 
