@@ -663,9 +663,15 @@ function drawBodyAndPatches(ctx, spine) {
   ctx.fillStyle   = '#FFFFFF'; ctx.fill()
   ctx.restore()
 
-  // White body base — warm ivory
+  // Body base — gradient ouro→marfim→turquesa seguindo a orientação do peixe
+  const gh = spine[0], gt = spine[NJ - 1]
+  const bg = ctx.createLinearGradient(gh.x, gh.y, gt.x, gt.y)
+  bg.addColorStop(0,    '#FFE88A')
+  bg.addColorStop(0.32, '#F8F4EE')
+  bg.addColorStop(0.68, '#E4F6F6')
+  bg.addColorStop(1,    '#A8E8E8')
   applyBodyPath(ctx, spine, edges)
-  ctx.fillStyle = '#F8F4EE'; ctx.fill()
+  ctx.fillStyle = bg; ctx.fill()
 
   ctx.save()
   applyBodyPath(ctx, spine, edges)
