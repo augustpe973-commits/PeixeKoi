@@ -14,6 +14,14 @@ const angleDiff = (a, b) => {
   return d
 }
 
+// 12 pontos espalhados pela tela — canto, meio de borda, e centro de quadrante
+const WAYPOINTS = [
+  [0.12, 0.12], [0.50, 0.08], [0.88, 0.12],
+  [0.92, 0.50], [0.88, 0.88], [0.50, 0.92],
+  [0.12, 0.88], [0.08, 0.50],
+  [0.28, 0.28], [0.72, 0.28], [0.72, 0.72], [0.28, 0.72],
+]
+
 // ── Body profile — fusiform, widest right after the head (anatomically correct) ──
 function bodyHW(t) {
   const pts = [
@@ -793,9 +801,8 @@ export default function KoiFish({ mouseRef }) {
 
     const sx = innerWidth / 2, sy = innerHeight / 2, sa = -Math.PI / 2
     const state = {
-      x: sx, y: sy, angle: sa, speed: 1.8,
-      wanderHeading: sa - Math.PI * 0.5,
-      wanderTimer: 0, wanderDue: 220,
+      x: sx, y: sy, angle: sa, speed: 2.4,
+      waypointIdx: 0,
       angVel: 0,
       wave: 0, dorsalPhase: 0, finFold: 0, time: 0,
       ripples: [], rippleTimer: 0, trail: [],
@@ -813,35 +820,32 @@ export default function KoiFish({ mouseRef }) {
       s.time += 0.016
 
       const dM  = Math.hypot(mouse.x - s.x, mouse.y - s.y)
-      const following = dM > 80 && dM < 840
-      let diff
+      const following = mouse.active && dM > 80 && dM < 840
 
-      // Calcular velocidade angular desejada
       let targetAngVel
       if (following) {
-        diff = angleDiff(s.angle, Math.atan2(mouse.y - s.y, mouse.x - s.x))
+        const diff = angleDiff(s.angle, Math.atan2(mouse.y - s.y, mouse.x - s.x))
         targetAngVel = clamp(diff, -0.026, 0.026)
       } else {
-        s.wanderTimer++
-        const bm = 150
-        const nearEdge = s.x < bm || s.x > W - bm || s.y < bm || s.y > H - bm
-
+        const EDGE = 80
+        const nearEdge = s.x < EDGE || s.x > W - EDGE || s.y < EDGE || s.y > H - EDGE
         if (nearEdge) {
-          s.wanderHeading = Math.atan2(H * 0.5 - s.y, W * 0.5 - s.x)
-          s.wanderTimer   = 0
-          s.wanderDue     = 300
-          diff = angleDiff(s.angle, s.wanderHeading)
-          targetAngVel = clamp(diff, -0.024, 0.024)
+          const diff = angleDiff(s.angle, Math.atan2(H * 0.5 - s.y, W * 0.5 - s.x))
+          targetAngVel = clamp(diff, -0.030, 0.030)
         } else {
-          if (s.wanderTimer >= s.wanderDue) {
-            const arc  = Math.PI * (0.33 + Math.random() * 1.17)
-            const sign = Math.random() < 0.5 ? 1 : -1
-            s.wanderHeading = s.angle + sign * arc
-            s.wanderTimer   = 0
-            s.wanderDue     = 220 + Math.round(Math.random() * 260)
+          const wp = WAYPOINTS[s.waypointIdx]
+          const tx = wp[0] * W, ty = wp[1] * H
+          if (Math.hypot(tx - s.x, ty - s.y) < 60) {
+            const ranked = WAYPOINTS
+              .map((w, i) => ({ i, d: Math.hypot(w[0] * W - s.x, w[1] * H - s.y) }))
+              .filter(({ i }) => i !== s.waypointIdx)
+              .sort((a, b) => b.d - a.d)
+              .slice(0, 4)
+            s.waypointIdx = ranked[Math.floor(Math.random() * ranked.length)].i
           }
-          diff = angleDiff(s.angle, s.wanderHeading)
-          targetAngVel = clamp(diff, -0.010, 0.010)
+          const cur = WAYPOINTS[s.waypointIdx]
+          const diff = angleDiff(s.angle, Math.atan2(cur[1] * H - s.y, cur[0] * W - s.x))
+          targetAngVel = clamp(diff, -0.022, 0.022)
         }
       }
 
@@ -851,8 +855,8 @@ export default function KoiFish({ mouseRef }) {
       s.finFold = lerp(s.finFold, Math.abs(s.angVel) > 0.008 ? 1 : 0, 0.08)
 
       const beatBoost = (Math.sin(s.wave * 1.9) * 0.5 + 0.5) * 0.46
-      s.speed = lerp(s.speed, 1.80 + beatBoost, 0.10)
-      s.speed = clamp(s.speed, 1.2, 3.0)
+      s.speed = lerp(s.speed, 2.40 + beatBoost, 0.10)
+      s.speed = clamp(s.speed, 1.8, 3.6)
 
       s.x = clamp(s.x + Math.cos(s.angle) * s.speed, 8, W - 8)
       s.y = clamp(s.y + Math.sin(s.angle) * s.speed, 8, H - 8)
@@ -905,5 +909,5 @@ export default function KoiFish({ mouseRef }) {
     return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize) }
   }, [])
 
-  return <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />
+  return <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%', touchAction: 'none' }} />
 }
