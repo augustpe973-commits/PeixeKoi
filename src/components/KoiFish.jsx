@@ -692,92 +692,63 @@ function drawBodyAndPatches(ctx, spine) {
   const _c = pts => { let x=0,y=0; pts.forEach(p=>{x+=p.x;y+=p.y}); return {x:x/pts.length,y:y/pts.length} }
   const _r = (pts,c) => pts.reduce((m,p)=>Math.max(m,Math.hypot(p.x-c.x,p.y-c.y)),0)
 
-  // Hi — halo externo suave + núcleo pintado; cor que vive na pele, não sobre ela
+  // Hi — forma alongada, borda que dissolve no degradê do corpo
   const hi = pts => {
     const c = _c(pts), r = _r(pts, c)
-
-    // Camada 1: halo amplo e etéreo
-    const g1 = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, r * 1.55)
-    g1.addColorStop(0,    'rgba(255,120,0,0.38)')
-    g1.addColorStop(0.45, 'rgba(255,100,0,0.14)')
-    g1.addColorStop(1,    'rgba(255,80,0,0)')
-    ctx.save(); ctx.filter = 'blur(28px)'
-    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g1; ctx.fill()
-    ctx.restore()
-
-    // Camada 2: núcleo pigmentado com borda que se dissolve
-    const g2 = ctx.createRadialGradient(c.x - r*0.18, c.y - r*0.18, 0, c.x, c.y, r * 1.02)
-    g2.addColorStop(0,    'rgba(255,115,0,0.80)')
-    g2.addColorStop(0.38, 'rgba(255,145,0,0.52)')
-    g2.addColorStop(0.72, 'rgba(230,80,0,0.18)')
-    g2.addColorStop(0.92, 'rgba(210,55,0,0.04)')
-    g2.addColorStop(1,    'rgba(190,40,0,0)')
-    ctx.save(); ctx.filter = 'blur(10px)'
-    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g2; ctx.fill()
+    const g = ctx.createRadialGradient(c.x - r*0.20, c.y - r*0.15, r*0.05, c.x + r*0.08, c.y + r*0.10, r * 1.0)
+    g.addColorStop(0,    'rgba(255,108,0,0.92)')
+    g.addColorStop(0.30, 'rgba(255,140,0,0.72)')
+    g.addColorStop(0.62, 'rgba(240,88,0,0.30)')
+    g.addColorStop(0.84, 'rgba(215,55,0,0.08)')
+    g.addColorStop(1,    'rgba(190,30,0,0)')
+    ctx.save(); ctx.filter = 'blur(6px)'
+    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g; ctx.fill()
     ctx.restore()
   }
 
-  // Sumi — velatura de turquesa que se funde ao corpo, sem bordas duras
+  // Sumi — pincelada turquesa, borda funde no branco
   const sumi = pts => {
     const c = _c(pts), r = _r(pts, c)
-
-    // Camada 1: halo largo e diáfano
-    const g1 = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, r * 1.50)
-    g1.addColorStop(0,    'rgba(0,210,235,0.32)')
-    g1.addColorStop(0.50, 'rgba(0,160,190,0.10)')
-    g1.addColorStop(1,    'rgba(0,120,150,0)')
-    ctx.save(); ctx.filter = 'blur(22px)'
-    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g1; ctx.fill()
-    ctx.restore()
-
-    // Camada 2: núcleo vívido com dissolução gradual
-    const g2 = ctx.createRadialGradient(c.x - r*0.12, c.y - r*0.14, 0, c.x, c.y, r * 1.04)
-    g2.addColorStop(0,    'rgba(0,218,238,0.85)')
-    g2.addColorStop(0.38, 'rgba(0,152,178,0.58)')
-    g2.addColorStop(0.72, 'rgba(0,86,108,0.20)')
-    g2.addColorStop(0.92, 'rgba(0,56,72,0.04)')
-    g2.addColorStop(1,    'rgba(0,38,50,0)')
-    ctx.save(); ctx.filter = 'blur(8px)'
-    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g2; ctx.fill()
+    const g = ctx.createRadialGradient(c.x - r*0.16, c.y - r*0.12, r*0.04, c.x + r*0.06, c.y + r*0.08, r * 1.0)
+    g.addColorStop(0,    'rgba(0,208,232,0.90)')
+    g.addColorStop(0.35, 'rgba(0,148,172,0.62)')
+    g.addColorStop(0.68, 'rgba(0,88,112,0.22)')
+    g.addColorStop(0.88, 'rgba(0,58,76,0.05)')
+    g.addColorStop(1,    'rgba(0,38,52,0)')
+    ctx.save(); ctx.filter = 'blur(4px)'
+    ctx.beginPath(); catmullClosed(ctx, pts); ctx.fillStyle = g; ctx.fill()
     ctx.restore()
   }
 
-  // ── Hi patches ──────────────────────────────────────────────────────────
-  hi(localToWorld(spine, 2, [
-    [-50,-62],[-72,-44],[-84,-16],[-82,18],[-68,48],[-44,64],
-    [-16,68],[14,60],[38,40],[52,12],[50,-20],[34,-46],[10,-60],[-20,-66]
+  // ── Hi patches — 2 formas orgânicas alongadas no eixo do corpo ───────────
+  // Mancha principal: ombro → meio do corpo (proporção ~2:1)
+  hi(localToWorld(spine, 4, [
+    [-108,-8], [-90,-38], [-62,-60], [-26,-72], [12,-70],
+    [48,-54],  [76,-26],  [88,8],    [80,40],   [56,62],
+    [20,72],   [-18,64],  [-52,44],  [-80,16],  [-100,-6]
   ]))
-  hi(localToWorld(spine, 6, [
-    [-44,-14],[-30,-42],[-8,-52],[18,-48],[40,-28],[48,2],[40,30],
-    [18,46],[-10,48],[-34,32],[-46,4]
-  ]))
-  hi(localToWorld(spine, 9, [
-    [-38,-8],[-24,-34],[-2,-42],[22,-36],[38,-12],[36,18],
-    [18,36],[-4,40],[-24,28],[-36,4]
-  ]))
+  // Acento traseiro: pequeno mas elongado
   hi(localToWorld(spine, 12, [
-    [-22,-4],[-14,-20],[2,-28],[16,-22],[24,0],[18,20],[2,28],[-14,20],[-22,2]
-  ]))
-  hi(localToWorld(spine, 15, [
-    [-8,-4],[-4,-12],[6,-14],[12,-6],[14,6],[8,12],[0,14],[-8,6]
+    [-42,-6], [-28,-20], [-6,-28], [16,-22], [28,-4],
+    [22,16],  [4,26],    [-18,20], [-34,4]
   ]))
 
-  // ── Sumi patches ────────────────────────────────────────────────────────
-  sumi(localToWorld(spine, 3, [
-    [-14,-30],[-2,-40],[16,-38],[28,-20],[30,4],[20,26],[2,34],[-16,28],[-24,6],[-18,-18]
+  // ── Sumi patches — 3 pinceladas fluidas ──────────────────────────────────
+  // Faixa principal: corre paralela ao hi, levemente sobreposta
+  sumi(localToWorld(spine, 6, [
+    [-88,-4],  [-70,-32], [-44,-52], [-10,-60], [26,-54],
+    [56,-36],  [74,-8],   [70,24],   [48,48],   [12,58],
+    [-24,50],  [-56,30],  [-78,4]
   ]))
-  sumi(localToWorld(spine, 5, [
-    [-28,-10],[-16,-36],[2,-46],[22,-44],[38,-24],[44,0],[36,26],
-    [16,42],[-6,44],[-26,30],[-36,8]
+  // Acento médio
+  sumi(localToWorld(spine, 10, [
+    [-52,-6], [-36,-26], [-10,-36], [16,-30], [32,-8],
+    [28,18],  [10,30],   [-14,28],  [-36,14], [-48,-2]
   ]))
-  sumi(localToWorld(spine, 8, [
-    [-18,-28],[-4,-38],[14,-34],[26,-14],[26,10],[14,28],[-4,32],[-20,20],[-24,0],[-18,-20]
-  ]))
-  sumi(localToWorld(spine, 11, [
-    [-20,-6],[-12,-22],[4,-30],[18,-22],[24,-2],[18,18],[4,26],[-12,18],[-20,0]
-  ]))
+  // Toque final na cauda
   sumi(localToWorld(spine, 14, [
-    [-8,-14],[-2,-20],[10,-18],[16,-6],[14,8],[4,16],[-8,12],[-14,0],[-10,-10]
+    [-24,-4], [-14,-16], [2,-22], [14,-14], [20,2],
+    [12,16],  [-2,22],   [-14,14], [-22,0]
   ]))
 
   // Cycloid scale texture
